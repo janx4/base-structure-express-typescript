@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import express, { Request, Response } from "express";
+import express, { Request, Response, Express } from "express";
 import helmet from "helmet";
 import cors from "cors";
 import path from "path";
@@ -12,8 +12,8 @@ import apiRoutes from "./src/routes/router";
 
 dotenv.config();
 
-const app = express();
-const port = process.env.PORT || 8888;
+const app: Express = express();
+const port: string | number = process.env.PORT || 8888;
 
 // Security configuration
 app.disable("x-powered-by");
@@ -26,17 +26,21 @@ app.use(
         limit: "50mb",
     })
 );
+// Set views
+app.set("views", path.join(__dirname, "/views"));
 
 /**
  * Logger
  */
-// create a rotating write stream
-var accessLogStream = rfs.createStream(
-    config.logger.fileName,
-    config.logger.streamLogOptions
-);
-// setup the logger
-app.use(morgan("combined", { stream: accessLogStream }));
+if (process.env.NODE_ENV === "production") {
+    // create a rotating write stream
+    var accessLogStream: rfs.RotatingFileStream = rfs.createStream(
+        config.logger.fileName,
+        config.logger.streamLogOptions
+    );
+    // setup the logger
+    app.use(morgan("combined", { stream: accessLogStream }));
+}
 
 // API Routing
 app.use("/api", apiRoutes);
