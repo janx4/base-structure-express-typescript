@@ -4,11 +4,11 @@ const swaggerConfig = {
         definition: {
             openapi: "3.0.0",
             info: {
-                title: "FoundMe Card API",
+                title: "API",
                 version: "2.0.0",
-                description: "FoundMe API for all lovely customers!",
+                description: "...",
             },
-            servers: [{ url: `http://localhost:${process.env.PORT || 8080}` }],
+            servers: [{ url: `http://localhost:${process.env.PORT || 8888}` }],
         },
         apis: ["../routes/*.js"],
     },

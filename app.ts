@@ -1,16 +1,18 @@
-import * as dotenv from "dotenv";
+import "dotenv/config";
 import express, { Request, Response, Express } from "express";
-import helmet from "helmet";
 import cors from "cors";
 import path from "path";
+// @ts-ignore
+import helmet from "helmet";
+// @ts-ignore
 import chalk from "chalk";
+// @ts-ignore
 import morgan from "morgan";
+// @ts-ignore
 import * as rfs from "rotating-file-stream";
 
 import config from "./src/config";
 import apiRoutes from "./src/routes/router";
-
-dotenv.config();
 
 const app: Express = express();
 const port: string | number = process.env.PORT || 8888;
@@ -28,19 +30,6 @@ app.use(
 );
 // Set views
 app.set("views", path.join(__dirname, "/views"));
-
-/**
- * Logger
- */
-if (process.env.NODE_ENV === "production") {
-    // create a rotating write stream
-    var accessLogStream: rfs.RotatingFileStream = rfs.createStream(
-        config.logger.fileName,
-        config.logger.streamLogOptions
-    );
-    // setup the logger
-    app.use(morgan("combined", { stream: accessLogStream }));
-}
 
 // API Routing
 app.use("/api", apiRoutes);
@@ -67,6 +56,19 @@ const server = app.listen(port, () => {
     );
     console.log(chalk.bold.blue(`http://localhost:${port}`));
 });
+
+/**
+ * Logger
+ */
+if (process.env.NODE_ENV === "production") {
+    // create a rotating write stream
+    var accessLogStream: rfs.RotatingFileStream = rfs.createStream(
+        config.logger.fileName,
+        config.logger.streamLogOptions
+    );
+    // setup the logger
+    app.use(morgan("combined", { stream: accessLogStream }));
+}
 
 /**
  * Webpack HMR Activation
